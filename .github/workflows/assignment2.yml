@@ -2,7 +2,8 @@ name: Task3_Workflow
 run-name: ${{github.actor}} has triggered this workflow using ${{github.event_name}}
 
 on:
- - pull_request
+  - push
+  - pull_request
 
 jobs:
   first-job:
