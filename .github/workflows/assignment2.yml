@@ -1,7 +1,7 @@
 name: Deploy to AWS for Testing (React App)
 run-name: ${{github.actor}} initiated the workflow - Deployment to AWS Testing
 on:
-  - pull_request
+  - push
 
 jobs:
   deploy:
