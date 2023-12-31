@@ -23,3 +23,15 @@ jobs:
         run: npm test
       - name: code analysis/linting
         run: npm run lint
+# - name: Send Email Notification on Success
+     # uses: dawidd6/action-send-mail@v2
+     # with:
+       # server_address: smtp.your-email-provider.com
+       # server_port: 587
+      #  username: ${{ secrets.EMAIL_USERNAME }}
+     #   password: ${{ secrets.EMAIL_PASSWORD }}
+    #    subject: "Deployment Successful"
+   #     to: "<QA_Email>"
+  #      body: |
+ #         The application has been successfully deployed for QA testing.
+#          Access it at: http://<Instance_IP>

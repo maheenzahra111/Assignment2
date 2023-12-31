@@ -1,0 +1,94 @@
+Use SSH to connect to your EC2 instance. Replace your-key.pem with the path to your private key file and your-instance-ip with your actual instance IP:
+ssh -i "your-key.pem" ec2-user@your-instance-ip
+
+Update and install necessary software on your EC2 instance. Install Node.js and npm:
+sudo yum update -y
+sudo yum install -y nodejs npm
+
+Transfer your project files from your local machine to the EC2 instance. You can use scp (secure copy) for this:
+scp -i "your-key.pem" -r /path/to/your/project ec2-user@your-instance-ip:/path/on/ec2
+
+Navigate to your project directory on the EC2 instance and install project dependencies:
+cd /path/on/ec2/your-project
+npm install
+
+If your project relies on environment variables, make sure to set them on your EC2 instance. You can do this in your shell profile (e.g., ~/.bashrc or ~/.bash_profile):
+export MY_ENV_VARIABLE=value
+
+Start your Node.js application. You might want to use a process manager like pm2 for better process control and monitoring:
+npm install -g pm2
+pm2 start your-app.js
+Replace your-app.js with the entry file of your application.
+
+
+7. Configure Security Groups:
+Ensure your EC2 instance's security group allows traffic on the necessary ports (e.g., port 80 or 3000 for a web application).
+
+8. Access Your Application:
+You can now access your Node.js application using your EC2 instance's public IP or domain name and the configured port (if applicable). For example, if your application is running on port 3000:
+
+http://your-instance-ip:3000
+
+
+name: Deploy to Staging
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy_to_staging:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14'
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Build Project
+      run: npm run build
+
+    - name: Unit Testing
+      run: npm test
+
+    - name: Code Analysis/Linting
+      run: npm run lint
+
+    - name: Deploy to Staging
+      run: |
+        # Add your deployment script or commands here
+        # Example: scp -r ./dist/* user@<Staging_Instance_IP>:/path/to/deployment/directory
+
+    - name: Notify Team
+      run: |
+        echo "The application has been deployed to the staging environment."
+        # Add additional details or instructions for the team
+
+    - name: Send Email Notification on Success
+      uses: dawidd6/action-send-mail@v2
+      with:
+        server_address: smtp.your-email-provider.com
+        server_port: 587
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: "Staging Deployment Successful"
+        to: "<Team_Members_Email>"
+        body: |
+          The application has been successfully deployed to the staging environment.
+          Access it at: http://<Staging_Instance_IP>
+
+on:
+  workflow_run:
+    workflows: ["Deploy to Staging"]
+    types:
+      - completed
+    branches:
+      - main
