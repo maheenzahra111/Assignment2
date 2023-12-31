@@ -1,0 +1,25 @@
+name: Task3_Workflow
+run-name: ${{github.actor}} has triggered this workflow using ${{github.event_name}}
+
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  first-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checking out to the repo
+        uses: actions/checkout@v4
+      - name: set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - name: Install npm
+        run: npm install
+      - name: build
+        run: npm run build-react
+      - name: Unit Testing
+        run: npm test
+      - name: code analysis/linting
+        run: npm run lint
